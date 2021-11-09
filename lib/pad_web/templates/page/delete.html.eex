@@ -1,0 +1,27 @@
+<%= form_for(@conn, Routes.page_path(@conn, @action), [class: "form_delete"], fn f -> %>
+  <select name="pad_id">
+    <%= for pad_id <- Pad.ProcessRegistry.get_pads() |> Enum.sort() do %>
+    <option value="<%= pad_id %>"><%= pad_id %></option>
+    <% end %>
+  </select>
+  <div>
+    <%= text_input(f, "password", placeholder: "Password") %>
+    <%= submit("Delete") %>
+  </div>
+<% end) %>
+
+<style>
+.form_delete > * {
+  display: block;
+}
+.container {
+  align-items: flex-start;
+  padding: 1em;
+  height: calc(100% - 2em);
+}
+.form_delete {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+</style>

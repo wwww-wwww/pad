@@ -1,0 +1,59 @@
+<%= form_for(@conn, Routes.page_path(@conn, :create), [class: "form_create"], fn f -> %>
+  <%= text_input(f, "name", placeholder: "Title") %>
+  <div id="form_instruments">
+  </div>
+  <button id="btn_add_inst">Add Instrument</button>
+  <%= text_input(f, "password", placeholder: "Password") %>
+  <%= submit("Create") %>
+<% end) %>
+
+<style>
+.form_create > * {
+  display: block;
+}
+.container {
+  align-items: flex-start;
+  padding: 1em;
+  height: calc(100% - 2em);
+}
+.form_create {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+#form_instruments {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+#form_instruments > * {
+  display: flex;
+  gap: 0.25em;
+}
+</style>
+
+<script>
+function create_element(root, tag) {
+  const e = document.createElement(tag)
+  if (root) {
+    root.appendChild(e)
+  }
+  return e
+}
+btn_add_inst.addEventListener("click", e => {
+  e.preventDefault()
+  const row = create_element(form_instruments, "div")
+  const inst = create_element(row, "input")
+  inst.placeholder = "Instrument"
+  inst.name = "inst[]"
+  const sheet = create_element(row, "input")
+  sheet.placeholder = "Sheet"
+  sheet.name = "sheet[]"
+  const btn_del = create_element(row, "button")
+  btn_del.innerText = "×"
+  btn_del.addEventListener("click", e => {
+    e.preventDefault()
+    form_instruments.removeChild(row)
+  })
+})
+</script>

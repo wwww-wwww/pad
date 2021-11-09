@@ -1,0 +1,50 @@
+<meta id="page_id" name="page_id" content="<%= @page %>">
+
+<input type="checkbox" id="chk_sidebar">
+<div class="header">
+  <label for="chk_sidebar"></label>
+  <span id="header_title"><%= @page_title %></span>
+</div>
+
+<div class="content">
+  <div class="sidebar">
+    <div id="sidebar_filter" class="hidden">
+      <input id="filter_text" placeholder="Regex search (ex. violin, viol.*)">
+      <select id="filter_sort">
+        <option value="0">Last edited</option>
+        <option value="1">Parts needed</option>
+        <option value="2">Alphabetical</option>
+        <option value="3">Newest first</option>
+      </select>
+    </div>
+    <div id="pads">
+      <%= for {pad_id, pad} <- @pinned_pads do %>
+        <%= if pad_id == @page do %>
+        <div class="pad pinned selected" data-page="<%= pad_id %>" data-url="<%= pad.etherpad_url %>" data-time="<%= pad.last_edited %>" data-created="<%= pad.created %>">
+        <% else %>
+        <div class="pad pinned" data-page="<%= pad_id %>" data-url="<%= pad.etherpad_url %>" data-time="<%= pad.last_edited %>" data-created="<%= pad.created %>">
+        <% end %>
+          <a href="<%= Routes.page_path(@conn, :index, pad_id) %>"><%= pad_id |> String.replace("_", " ") %></a>
+        </div>
+      <% end %>
+
+      <%= for {pad_id, pad} <- @pads do %>
+        <%= if pad_id == @page do %>
+        <div class="pad selected" data-page="<%= pad_id %>" data-url="<%= pad.etherpad_url %>" data-time="<%= pad.last_edited %>" data-created="<%= pad.created %>" data-needed="<%= length(pad.needs) %>">
+        <% else %>
+        <div class="pad" data-page="<%= pad_id %>" data-url="<%= pad.etherpad_url %>" data-time="<%= pad.last_edited %>" data-created="<%= pad.created %>" data-needed="<%= length(pad.needs) %>">
+        <% end %>
+          <a href="<%= Routes.page_path(@conn, :index, pad_id) %>"><%= pad_id |> String.replace("_", " ") %></a>
+          <%= if length(pad.needs) > 0 do %>
+          <span>Needs <%= pad.needs |> Enum.join(", ") %></span>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  <div class="more-content" style="flex: 1;">
+    <iframe id="pad_iframe" src="<%= @pad.etherpad_url %>"></iframe>
+  </div>
+</div>
+
+<script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/assets/app.js") %>"></script>
