@@ -9,15 +9,15 @@ config :pad, Pad.Repo,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
-  defmodule Watcher do
-    def watch(modules, module, args) do
-      modules
-      |> Enum.map(fn m ->
-        atom = String.to_atom("#{module}_#{Atom.to_string(m)}")
-        {atom, {module, :install_and_run, [m, args]}}
-      end)
-    end
+defmodule Watcher do
+  def watch(modules, module, args) do
+    modules
+    |> Enum.map(fn m ->
+      atom = String.to_atom("#{module}_#{Atom.to_string(m)}")
+      {atom, {module, :install_and_run, [m, args]}}
+    end)
   end
+end
 
 config :pad, PadWeb.Endpoint,
   url: [host: "w.grass.moe", port: 4006],

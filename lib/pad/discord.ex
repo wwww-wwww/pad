@@ -227,21 +227,11 @@ defmodule Pad.Consumer do
         System.cmd("python3", ["txt2img.py", "songinfo/#{filename}", text])
         |> case do
           {_, 0} ->
-            image_url =
-              Routes.url(PadWeb.Endpoint)
-              |> URI.merge(Routes.api_path(PadWeb.Endpoint, :songinfo, filename))
-              |> URI.to_string()
-
-            url =
-              Routes.url(PadWeb.Endpoint)
-              |> URI.merge(Routes.page_path(PadWeb.Endpoint, :index, pad))
-              |> URI.to_string()
-
             embed =
               %Embed{}
               |> put_title(String.replace(pad, "_", " "))
-              |> put_url(url)
-              |> put_image(image_url)
+              |> put_url(Routes.page_url(PadWeb.Endpoint, :index, pad))
+              |> put_image(Routes.api_url(PadWeb.Endpoint, :songinfo, filename))
               |> put_color(Application.fetch_env!(:pad, :embed_color))
 
             Api.create_interaction_response(interaction, %{
