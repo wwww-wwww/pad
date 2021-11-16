@@ -225,9 +225,13 @@ defmodule Pad.PadMonitor do
     text
     |> String.split("\n")
     |> Stream.map(fn line ->
-      line
-      |> Stream.unfold(&String.split_at(&1, max_length))
-      |> Enum.take_while(&(&1 != ""))
+      if String.length(line) > max_length do
+        line
+        |> Stream.unfold(&String.split_at(&1, max_length))
+        |> Enum.take_while(&(&1 != ""))
+      else
+        line
+      end
     end)
     |> Enum.reduce([], &(&2 ++ &1))
   end
