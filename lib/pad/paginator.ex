@@ -25,28 +25,28 @@ defmodule Pad.Paginator do
       [
         %{
           type: 2,
-          label: "|<",
+          label: "❙⮜",
           style: 1,
           custom_id: "page_jump:0",
           disabled: current_page == 0
         },
         %{
           type: 2,
-          label: "<",
+          label: "⮜",
           style: 1,
           custom_id: "page:#{current_page - 1}",
           disabled: current_page == 0
         },
         %{
           type: 2,
-          label: ">",
+          label: "⮞",
           style: 1,
           custom_id: "page:#{current_page + 1}",
           disabled: current_page == length(pages) - 1
         },
         %{
           type: 2,
-          label: ">|",
+          label: "⮞❙",
           style: 1,
           custom_id: "page_jump:#{length(pages) - 1}",
           disabled: current_page == length(pages) - 1
