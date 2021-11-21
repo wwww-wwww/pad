@@ -230,7 +230,7 @@ defmodule Pad.PadMonitor do
         |> Stream.unfold(&String.split_at(&1, max_length))
         |> Enum.take_while(&(&1 != ""))
       else
-        line
+        [line]
       end
     end)
     |> Enum.reduce([], &(&2 ++ &1))
