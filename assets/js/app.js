@@ -1,9 +1,14 @@
 import "phoenix_html"
 
+let current_page = document.getElementById("page_id").content
+
 function set_page(state) {
   pad_iframe.contentWindow.location.replace(state.page_url)
   header_title.textContent = state.page_name
   document.title = state.page_name
+
+  current_page = state.page_id
+
   Array.from(pads.children).forEach(pad => {
     pad.classList.toggle("selected", pad.getAttribute("data-page") == state.page_id)
   })
@@ -14,6 +19,10 @@ Array.from(pads.children).forEach(e => {
   e.children[0].removeAttribute("href")
   e.addEventListener("click", ev => {
     ev.preventDefault()
+
+    if (e.getAttribute("data-page") == current_page) {
+      return
+    }
 
     const new_state = {
       page_id: e.getAttribute("data-page"),
@@ -27,7 +36,7 @@ Array.from(pads.children).forEach(e => {
 })
 
 const original_state = {
-  page_id: document.getElementById("page_id").content,
+  page_id: current_page,
   page_url: pad_iframe.src,
   page_name: header_title.textContent
 }
