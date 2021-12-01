@@ -12,8 +12,53 @@ defmodule Pad.Consumer do
 
   require Logger
 
+  @role_map %{
+    635_573_069_913_784_365 => [
+      "glock",
+      "xylophone",
+      "triangle",
+      "marimba",
+      "tambourine",
+      "chimes",
+      "timpani",
+      "wood block",
+      "shaker",
+      "percussion"
+    ],
+    # perc aux
+    411_694_635_245_895_680 => [
+      "glock",
+      "xylophone",
+      "triangle",
+      "marimba",
+      "tambourine",
+      "chimes",
+      "timpani",
+      "wood block",
+      "shaker",
+      "percussion"
+    ],
+    # electric bass
+    411_694_509_693_599_745 => [
+      "bass"
+    ],
+    # double bass
+    411_694_873_205_538_816 => ["bass"],
+    411_694_855_534_673_925 => ["baritone sax", "bari sax"],
+    411_694_305_120_354_315 => ["drum"],
+    411_696_758_670_753_792 => ["acoustic guitar", "a.guitar", "a. guitar"],
+    411_696_722_348_343_297 => ["classical guitar", "c.guitar", "c. guitar"],
+    411_693_847_098_294_274 => ["electric guitar", "e.guitar", "e. guitar"],
+    411_694_110_718_558_220 => ["trombone"],
+    411_895_492_436_295_681 => ["synth"]
+  }
+
   def start_link do
     Consumer.start_link(__MODULE__)
+  end
+
+  def expand_role({role_id, role_name}) do
+    Map.get(@role_map, role_id, [role_name])
   end
 
   def broadcast_new_pad(pad_id) do
@@ -148,7 +193,7 @@ defmodule Pad.Consumer do
   def do_interaction(
         "needs",
         %Interaction{
-          data: %{options: [%{name: "user"}], resolved: %{members: members}},
+          data: %{options: [%{name: "user"}], resolved: %{members: members, users: users}},
           guild_id: guild_id
         } = interaction
       ) do
@@ -167,13 +212,18 @@ defmodule Pad.Consumer do
       roles ->
         case Api.get_guild_roles(guild_id) do
           {:ok, guild_roles} ->
-            parts =
-              guild_roles
-              |> Stream.map(&{&1.id, &1.name})
-              |> Stream.filter(&(elem(&1, 0) in roles))
-              |> Enum.map(&elem(&1, 1))
+            user =
+              users
+              |> Enum.map(&"#{elem(&1, 1).username}##{elem(&1, 1).discriminator}")
+              |> Enum.at(0)
 
-            needs(parts, interaction, "Needs #{Enum.join(parts, ", ")}")
+            guild_roles
+            |> Stream.map(&{&1.id, &1.name})
+            |> Stream.filter(&(elem(&1, 0) in roles))
+            |> Stream.map(&expand_role(&1))
+            |> Enum.reduce([], &(&2 ++ &1))
+            |> Enum.map(&elem(&1, 1))
+            |> needs(interaction, "Needs #{user}")
 
           _ ->
             nil
@@ -200,6 +250,8 @@ defmodule Pad.Consumer do
         guild_roles
         |> Stream.map(&{&1.id, &1.name})
         |> Stream.filter(&(elem(&1, 0) in roles))
+        |> Stream.map(&expand_role(&1))
+        |> Enum.reduce([], &(&2 ++ &1))
         |> Enum.map(&elem(&1, 1))
         |> needs(interaction, "Needs #{username}##{discriminator}")
 
