@@ -16,7 +16,7 @@ function set_page(state) {
 
 Array.from(pads.children).forEach(e => {
   const title = e.children[0].textContent
-  e.children[0].removeAttribute("href")
+  e.children[0].addEventListener("click", ev => ev.preventDefault())
   e.addEventListener("click", ev => {
     ev.preventDefault()
 
