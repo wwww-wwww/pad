@@ -64,12 +64,12 @@ defmodule Pad.Consumer do
   def broadcast_new_pad(pad_id) do
     url =
       Routes.url(PadWeb.Endpoint)
-      |> URI.merge(Routes.page_path(PadWeb.Endpoint, :index, pad_id))
+      |> URI.merge(Routes.page_path(PadWeb.Endpoint, :index, pad_id |> String.replace(" ", "_")))
       |> URI.to_string()
 
     embed =
       %Embed{}
-      |> put_description("Pad [#{String.replace(pad_id, "_", " ")}](#{url}) was created")
+      |> put_description("Pad [#{pad_id}](#{url}) was created")
       |> put_color(Application.fetch_env!(:pad, :embed_color))
       |> put_timestamp(
         DateTime.utc_now()
