@@ -34,6 +34,12 @@ defmodule PadWeb.Router do
     get "/songinfo/:file", ApiController, :songinfo
   end
 
+  scope "/api", PadWeb do
+    pipe_through :api
+
+    get "/pads", ApiController, :list_pads
+  end
+
   # Enables LiveDashboard only for development
   #
   # If you want to use the LiveDashboard in production, you should put
