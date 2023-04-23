@@ -32,3 +32,5 @@ pad-*.tar
 npm-debug.log
 /assets/node_modules/
 
+*.webp
+*.txt.gz
