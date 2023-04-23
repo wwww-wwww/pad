@@ -129,7 +129,7 @@ defmodule PadWeb.PageController do
   end
 
   def superdelete(%{method: "POST"} = conn, %{"pad_id" => pad_id, "password" => password}) do
-    if Pad.Application.check_password(password) do
+    if Pad.check_password(password) do
       case Songlist.delete_pad(pad_id) do
         :ok ->
           conn

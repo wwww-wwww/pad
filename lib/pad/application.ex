@@ -28,17 +28,4 @@ defmodule Pad.Application do
     PadWeb.Endpoint.config_change(changed, removed)
     :ok
   end
-
-  def regen_pass() do
-    password = Bcrypt.gen_salt()
-    Application.put_env(:pad, :superdelete, Bcrypt.hash_pwd_salt(password))
-    password
-  end
-
-  def check_password(password) do
-    case Application.get_env(:pad, :superdelete) do
-      nil -> false
-      key -> Bcrypt.verify_pass(password, key)
-    end
-  end
 end
