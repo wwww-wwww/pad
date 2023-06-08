@@ -33,26 +33,26 @@ defmodule Pad.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.6.0"},
+      {:phoenix, "~> 1.7.0"},
       {:phoenix_ecto, "~> 4.4"},
-      {:ecto_sql, "~> 3.4"},
+      {:ecto_sql, "~> 3.6"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
-      {:phoenix_live_dashboard, "~> 0.5"},
-      {:esbuild, "~> 0.2", runtime: Mix.env() == :dev},
+      {:phoenix_live_dashboard, "~> 0.6"},
+      {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
-      {:gettext, "~> 0.18"},
-      {:jason, "~> 1.2"},
-      {:plug_cowboy, "~> 2.5"},
-      {:httpoison, "~> 1.8"},
+      {:gettext, "~> 0.22"},
+      {:jason, "~> 1.4"},
+      {:plug_cowboy, "~> 2.6"},
+      {:httpoison, "~> 2.1"},
       {:diff, "~> 1.1"},
       {:nostrum, github: "Kraigie/nostrum"},
       {:bcrypt_elixir, "~> 2.0"},
       {:gun, "2.0.1", hex: :remedy_gun, override: true},
       {:cowlib, "~> 2.11", hex: :remedy_cowlib, override: true},
-      {:dart_sass, "~> 0.2", runtime: Mix.env() == :dev}
+      {:dart_sass, "~> 0.6", runtime: Mix.env() == :dev}
     ]
   end
 
