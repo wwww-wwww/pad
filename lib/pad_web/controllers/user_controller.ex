@@ -237,7 +237,7 @@ defmodule PadWeb.UserController do
     end
   end
 
-  def delete_pad(conn, %{"pad_id" => pad_id}) do
+  def delete_pad(conn, %{"pad_id" => _}) do
     conn
     |> put_flash(:error, "Are you sure you want to do that?")
     |> redirect(to: Routes.user_path(conn, :user, conn.assigns.current_user.username))
