@@ -22,6 +22,6 @@ defmodule PadWeb.ApiController do
   end
 
   def list_pads(conn, _params) do
-    json(conn, Pad.Songlist.get_all_pads() |> Enum.map(& elem(&1, 0)))
+    json(conn, Pad.Songlist.get_all_pads() |> Enum.map(&elem(&1, 0)))
   end
 end

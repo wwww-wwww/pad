@@ -1,0 +1,7 @@
+<%= form_tag(Routes.user_path(@conn, :sign_in)) do %>
+<%= tag(:input, type: "text", name: "username", placeholder: "Username") %>
+<%= tag(:input, type: "password", name: "password", placeholder: "Password") %>
+<%= submit("Sign In") %>
+<% end %>
+
+<style>form { padding: 1em; }</style>

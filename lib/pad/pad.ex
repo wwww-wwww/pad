@@ -28,6 +28,7 @@ defmodule Pad.PadAgent do
   @etherpad_url "https://okea.moe/etherpad/p/"
 
   defstruct pad_id: "",
+            title: "",
             etherpad_url: "",
             url: "",
             pinned: false,
@@ -54,6 +55,7 @@ defmodule Pad.PadAgent do
       fn ->
         %__MODULE__{
           pad_id: pad_id,
+          title: pad_id |> String.replace("_", " "),
           etherpad_url: etherpad_url,
           url: url,
           pinned: pinned,
@@ -77,14 +79,11 @@ defmodule Pad.PadAgent do
     Agent.update(pid, &Map.merge(&1, opts))
   end
 
-  def get(pad_id) when is_binary(pad_id) do
-    Pad.ProcessRegistry.lookup(pad_id, :agent)
-    |> get()
-  end
+  def get(pad_id) when is_binary(pad_id), do: Pad.ProcessRegistry.lookup(pad_id, :agent) |> get()
 
-  def get(pid) do
-    Agent.get(pid, & &1)
-  end
+  def get(:not_found), do: :not_found
+
+  def get(pid), do: Agent.get(pid, & &1)
 end
 
 defmodule Pad.PadMonitor do
@@ -112,7 +111,11 @@ defmodule Pad.PadMonitor do
 
     GenServer.start_link(
       __MODULE__,
-      %__MODULE__{cookies: cookies, pad_id: pad_id, monitor: monitor},
+      %__MODULE__{
+        cookies: cookies,
+        pad_id: pad_id,
+        monitor: monitor
+      },
       name: via_tuple(pad_id)
     )
   end

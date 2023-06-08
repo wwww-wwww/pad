@@ -174,17 +174,14 @@ defmodule Pad.Songlist do
     |> Map.new()
   end
 
-  def create_pad(id, text, password) do
+  def create_pad(id, text, user) do
     case GenServer.call(__MODULE__, {:create, id, text}) do
       %{body: body} ->
         case Jason.decode!(body) do
           %{"message" => "ok"} ->
-            if String.length(password) > 0 do
-              Pad.Repo.insert(%Pad.Password{
-                id: id |> String.replace(" ", "_"),
-                password: Bcrypt.hash_pwd_salt(password)
-              })
-            end
+            Ecto.build_assoc(user, :pads)
+            |> Pad.Password.changeset(%{id: id})
+            |> Pad.Repo.insert()
 
             GenServer.call(__MODULE__, :loop)
             Pad.Consumer.broadcast_new_pad(id)

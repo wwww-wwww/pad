@@ -1,12 +1,15 @@
 defmodule PadWeb.Router do
   use PadWeb, :router
 
+  import PadWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
@@ -17,14 +20,32 @@ defmodule PadWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    get "/create", PageController, :create
-    post "/create", PageController, :create
 
-    get "/delete", PageController, :delete
-    post "/delete", PageController, :delete
+    get "/u/:username", UserController, :user
 
-    get "/superdelete", PageController, :superdelete
-    post "/superdelete", PageController, :superdelete
+    get "/sign_out", UserController, :sign_out
+
+    scope "/" do
+      pipe_through :redirect_if_user_is_authenticated
+
+      get "/sign_in", UserController, :sign_in
+      post "/sign_in", UserController, :sign_in
+
+      get "/sign_up", UserController, :sign_up
+      post "/sign_up", UserController, :sign_up
+    end
+
+    scope "/" do
+      pipe_through :require_authenticated_user
+
+      post "/change_password", UserController, :change_password
+
+      post "/claim_pad", UserController, :claim_pad
+      post "/delete_pad", UserController, :delete_pad
+
+      get "/create_pad", UserController, :create_pad
+      post "/create_pad", UserController, :create_pad
+    end
   end
 
   scope "/", PadWeb do

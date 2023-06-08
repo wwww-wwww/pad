@@ -1,9 +1,8 @@
-<%= form_for(@conn, Routes.page_path(@conn, :create), [class: "form_create"], fn f -> %>
+<%= form_for(@conn, Routes.user_path(@conn, :create_pad), [class: "form_create"], fn f -> %>
   <%= text_input(f, "name", placeholder: "Title") %>
   <div id="form_instruments">
   </div>
   <button id="btn_add_inst">Add Instrument</button>
-  <%= text_input(f, "password", placeholder: "Password") %>
   <%= submit("Create") %>
 <% end) %>
 
@@ -11,15 +10,12 @@
 .form_create > * {
   display: block;
 }
-.container {
-  align-items: flex-start;
-  padding: 1em;
-  height: calc(100% - 2em);
-}
 .form_create {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 0.5em;
+  padding: 0.5em;
 }
 #form_instruments {
   display: flex;

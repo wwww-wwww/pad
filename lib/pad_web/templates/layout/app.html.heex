@@ -9,10 +9,35 @@
     <meta name="keywords" content="orchestr/a/,oke/a/,okea,4chan orchestra"/>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
   </head>
+
   <body>
     <main role="main" class="container">
+      <input type="checkbox" id="chk_sidebar">
+      <div class="header">
+        <div class="left">
+          <%= if @conn.private[:phoenix_action] == :index do %>
+            <label for="chk_sidebar"></label>
+          <% else %>
+            <%= link("Index", to: Routes.page_path(@conn, :index)) %>
+          <% end %>
+          <%= if assigns[:page_title] do %>
+            <span id="header_title"><%= assigns[:page_title] %></span>
+          <% end %>
+        </div>
+        <div class="right">
+          <%= if @current_user do %>
+            <%= link(@current_user.name, to: Routes.user_path(@conn, :user, @current_user.username)) %>
+            <%= link("Sign Out", to: Routes.user_path(@conn, :sign_out)) %>
+          <% else %>
+            <%= link("Sign In", to: Routes.user_path(@conn, :sign_in)) %>
+            <%= link("Sign Up", to: Routes.user_path(@conn, :sign_up)) %>
+          <% end %>
+        </div>
+      </div>
+
       <p class="alert alert-info" role="alert"><%= Phoenix.Flash.get(@flash, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= Phoenix.Flash.get(@flash, :error) %></p>
+
       <%= @inner_content %>
     </main>
   </body>

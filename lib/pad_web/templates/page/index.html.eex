@@ -1,11 +1,5 @@
 <meta id="page_id" name="page_id" content="<%= @page %>">
 
-<input type="checkbox" id="chk_sidebar">
-<div class="header">
-  <label for="chk_sidebar"></label>
-  <span id="header_title"><%= @page_title %></span>
-</div>
-
 <div class="content">
   <div class="sidebar">
     <div id="sidebar_filter" class="hidden">
@@ -24,7 +18,7 @@
         <% else %>
         <div class="pad pinned" data-page="<%= pad_id %>" data-url="<%= pad.etherpad_url %>" data-time="<%= pad.last_edited %>" data-created="<%= pad.created %>">
         <% end %>
-          <a href="<%= Routes.page_path(@conn, :index, pad_id) %>"><%= pad_id |> String.replace("_", " ") %></a>
+          <%= link(pad.title, to: Routes.page_path(@conn, :index, pad_id)) %>
         </div>
       <% end %>
 
@@ -34,7 +28,7 @@
         <% else %>
         <div class="pad" data-page="<%= pad_id %>" data-url="<%= pad.etherpad_url %>" data-time="<%= pad.last_edited %>" data-created="<%= pad.created %>" data-needed="<%= length(pad.needs) %>">
         <% end %>
-          <a href="<%= Routes.page_path(@conn, :index, pad_id) %>"><%= pad_id |> String.replace("_", " ") %></a>
+          <%= link(pad.title, to: Routes.page_path(@conn, :index, pad_id)) %>
           <%= if length(pad.needs) > 0 do %>
           <span>Needs <%= pad.needs |> Enum.join(", ") %></span>
           <% end %>
