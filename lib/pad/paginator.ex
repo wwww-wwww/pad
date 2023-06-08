@@ -82,15 +82,14 @@ defmodule Pad.Paginator do
     })
   end
 
-  def change_page(interaction, interaction2, id, new_page) do
+  def change_page(interaction, id, new_page) do
     {new_page, _} = Integer.parse(new_page)
 
-    Agent.get(__MODULE__, &Map.get(&1, id))
-    |> case do
+    case Agent.get(__MODULE__, &Map.get(&1, id)) do
       nil ->
         nil
 
-      %{embeds: pages, time: time, interaction: interaction2} ->
+      %{embeds: pages} ->
         Api.create_interaction_response(interaction, %{
           type: 7,
           data: %{

@@ -64,14 +64,6 @@ defmodule Pad.Songlist do
     {:ok, state}
   end
 
-  def handle_call(:loop, _, state) do
-    if state.timer do
-      Process.cancel_timer(state.timer)
-    end
-
-    {:reply, :ok, elem(handle_info(:loop, state), 1)}
-  end
-
   def handle_cast(:loop, state) do
     if state.timer do
       Process.cancel_timer(state.timer)
@@ -121,6 +113,14 @@ defmodule Pad.Songlist do
 
     timer = Process.send_after(self(), :loop, @sleep_time)
     {:noreply, %{state | timer: timer}}
+  end
+
+  def handle_call(:loop, _, state) do
+    if state.timer do
+      Process.cancel_timer(state.timer)
+    end
+
+    {:reply, :ok, elem(handle_info(:loop, state), 1)}
   end
 
   def handle_call({:create, id, text}, _, state) do

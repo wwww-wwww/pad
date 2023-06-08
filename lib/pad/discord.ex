@@ -309,20 +309,20 @@ defmodule Pad.Consumer do
         _,
         %Interaction{
           data: %ApplicationCommandInteractionData{custom_id: "page:" <> page},
-          message: %{interaction: %{id: id} = interaction2}
+          message: %{interaction: %{id: id}}
         } = interaction
       ) do
-    Pad.Paginator.change_page(interaction, interaction2, id, page)
+    Pad.Paginator.change_page(interaction, id, page)
   end
 
   def do_interaction(
         _,
         %Interaction{
           data: %ApplicationCommandInteractionData{custom_id: "page_jump:" <> page},
-          message: %{interaction: %{id: id} = interaction2}
+          message: %{interaction: %{id: id}}
         } = interaction
       ) do
-    Pad.Paginator.change_page(interaction, interaction2, id, page)
+    Pad.Paginator.change_page(interaction, id, page)
   end
 
   def do_interaction(name, interaction) do

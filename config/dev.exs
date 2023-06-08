@@ -1,11 +1,11 @@
-use Mix.Config
+import Config
 
 # Configure your database
 config :pad, Pad.Repo,
   username: "w",
   password: "1234",
   database: "etherpad",
-  hostname: "192.168.1.50",
+  hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
@@ -20,22 +20,21 @@ defmodule Watcher do
 end
 
 config :pad, PadWeb.Endpoint,
-  url: [host: "w.grass.moe", port: 4006],
-  http: [port: 4006],
-  debug_errors: true,
-  code_reloader: true,
+  http: [ip: {0, 0, 0, 0}, port: 4000],
+  url: [host: "bc.grass.moe"],
   check_origin: false,
-  watchers:
-    Watcher.watch(
-      [:app],
-      Esbuild,
-      ~w(--sourcemap=inline --watch)
-    ) ++
-      Watcher.watch(
-        [:app],
-        DartSass,
-        ~w(--embed-source-map --source-map-urls=absolute --watch)
-      )
+  code_reloader: true,
+  debug_errors: true,
+  secret_key_base: "Hw8UXgVrkdi06HPuW6NdJ4AA2AhgPVC/8Y3GSGVh0c9fIJWw+iKWXguoteOHoEAE",
+  watchers: [
+    esbuild: {Esbuild, :install_and_run, [:app, ~w(--sourcemap=inline --watch)]},
+    dartsass:
+      {DartSass, :install_and_run,
+       [:app, ~w(--embed-source-map --source-map-urls=absolute --watch)]}
+  ]
+
+config :pad,
+  api_key: ""
 
 # ## SSL Support
 #
