@@ -11,20 +11,20 @@
 <h2>Control Panel</h2>
 
 <div>
-<h3>Change Password</h3>
+<h3>Change password</h3>
 <%= form_tag(Routes.user_path(@conn, :change_password)) do %>
-  <%= tag(:input, type: "password", name: "password", placeholder: "Current Password") %>
-  <%= tag(:input, type: "password", name: "new_password", placeholder: "New Password") %>
+  <%= tag(:input, type: "password", name: "password", placeholder: "Current password") %>
+  <%= tag(:input, type: "password", name: "new_password", placeholder: "New password") %>
 <%= submit("Change") %>
 <% end %>
 </div>
 
 <div>
-<h3><%= link("Create Pad", to: Routes.user_path(@conn, :create_pad)) %></h3>
+<h3><%= link("Create pad", to: Routes.user_path(@conn, :create_pad)) %></h3>
 </div>
 
 <div>
-<h3>claim pad</h3>
+<h3>Claim pad</h3>
 <%= form_tag(Routes.user_path(@conn, :claim_pad)) do %>
   <select name="pad_id">
     <%= for pad <- get_password_pads() |> Enum.filter(& &1.user_username == nil) |> Enum.sort_by(& String.downcase(&1.id)) do %>
@@ -38,7 +38,7 @@
 
 <%= if @current_user.level >= 100 do %>
 <div>
-<h3>claim unpassworded pad</h3>
+<h3>Claim unpassworded pad</h3>
 <%= form_tag(Routes.user_path(@conn, :claim_pad)) do %>
   <select name="pad_id">
     <%= for pad_id <- get_unpassworded_pads() |> Enum.sort_by(& String.downcase(&1)) do %>
@@ -51,28 +51,28 @@
 <% end %>
 
 <div>
-<h3>delete pad</h3>
+<h3>Delete pad</h3>
 <%= form_tag(Routes.user_path(@conn, :delete_pad)) do %>
   <select name="pad_id">
     <%= for pad <- @user.pads |> Enum.sort_by(& String.downcase(&1.id)) do %>
     <option value={pad.id}><%= pad.id %></option>
     <% end %>
   </select>
-  <%= tag(:input, name: "confirm", placeholder: "type \"confirm\"", value: "") %>
+  <%= tag(:input, name: "confirm", placeholder: "Type \"confirm\"", value: "") %>
 <%= submit("Delete") %>
 <% end %>
 </div>
 
 <%= if @current_user.level >= 100 do %>
 <div>
-<h3>(super) delete pad</h3>
+<h3>(Super) Delete pad</h3>
 <%= form_tag(Routes.user_path(@conn, :delete_pad)) do %>
   <select name="pad_id">
     <%= for pad <- get_password_pads() |> Enum.sort_by(& String.downcase(&1.id)) do %>
     <option value={pad.id}><%= pad.id %></option>
     <% end %>
   </select>
-  <%= tag(:input, name: "confirm", placeholder: "type \"confirm\"", value: "") %>
+  <%= tag(:input, name: "confirm", placeholder: "Type \"confirm\"", value: "") %>
 <%= submit("Delete") %>
 <% end %>
 </div>
@@ -82,7 +82,7 @@
 <div>
 <h2>Pads</h2>
 <%= for pad <- @user.pads |> Enum.sort_by(& &1.id) do %>
-<div><%= pad.id %></div>
+<div><%= pad.id |> String.replace("_", " ") %></div>
 <% end %>
 </div>
 <% end %>
