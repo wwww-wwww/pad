@@ -145,7 +145,6 @@ defmodule Pad.PadMonitor do
               if state.changed and :os.system_time(:millisecond) - state.change_time > 30000 do
                 if state.original_text != current_text do
                   diff(wrap_lines(state.original_text), wrap_lines(current_text))
-                  |> Enum.join("\n")
                   |> Pad.Consumer.broadcast_change(PadAgent.get(state.pad_id))
                 end
 
@@ -243,92 +242,12 @@ defmodule Pad.PadMonitor do
   def diff(old_lines, new_lines, pad \\ 3)
 
   def diff(old_lines, new_lines, _pad) when length(old_lines) == 0 and length(new_lines) == 0 do
-    []
-  end
-
-  def diff(old_lines, new_lines, _pad) when length(old_lines) == 0 and length(new_lines) != 0 do
-    ["@@ 0 @@"] ++ Enum.map(new_lines, &("+" <> &1))
-  end
-
-  def diff(old_lines, new_lines, _pad) when length(old_lines) != 0 and length(new_lines) == 0 do
-    ["@@ 0 @@"] ++ Enum.map(old_lines, &("-" <> &1))
+    "[]"
   end
 
   def diff(old_lines, new_lines, pad) do
-    {lines, index} =
-      Diff.diff(old_lines, new_lines)
-      |> Enum.map(fn diff ->
-        case diff do
-          %Diff.Modified{element: new, old_element: old, index: index, length: length} ->
-            [
-              %Diff.Delete{element: old, index: index, length: length},
-              %Diff.Insert{element: new, index: index, length: length}
-            ]
-
-          _ ->
-            [diff]
-        end
-      end)
-      |> Enum.reduce([], &(&2 ++ &1))
-      |> Enum.reduce({[], -1}, fn %{index: index} = diff, {lines, last_line} ->
-        prefix =
-          case diff do
-            %Diff.Insert{} -> "+"
-            %Diff.Delete{} -> "-"
-            _ -> ""
-          end
-
-        insert = Enum.map(diff.element, &(prefix <> &1))
-
-        pre_start =
-          if index - last_line > pad do
-            max(index - pad, 0)
-          else
-            max(max(index - pad, last_line), 0)
-          end
-
-        post_start = max(last_line, 0)
-
-        post_lines =
-          cond do
-            last_line == -1 ->
-              ["@@ #{index} @@"]
-
-            last_line > -1 and index - post_start - pad > pad ->
-              (new_lines
-               |> Stream.drop(post_start)
-               |> Enum.take(min(pad, max(pre_start - post_start, 0)))) ++
-                ["@@ #{index} @@"]
-
-            last_line > -1 and index - post_start + 1 >= pad ->
-              new_lines
-              |> Stream.drop(post_start)
-              |> Enum.take(min(pad, max(pre_start - post_start, 0)))
-
-            true ->
-              []
-          end
-
-        pre_lines =
-          new_lines
-          |> Stream.drop(pre_start)
-          |> Enum.take(index - pre_start)
-
-        new_index = diff.index
-
-        new_index =
-          case diff do
-            %Diff.Insert{length: len} -> new_index + len
-            _ -> new_index
-          end
-
-        {lines ++ post_lines ++ pre_lines ++ insert, new_index}
-      end)
-
-    if length(new_lines) > 0 and index < length(new_lines) do
-      lines ++ (Enum.drop(new_lines, index) |> Enum.take(3))
-    else
-      lines
-    end
+    Dmp.Diff.line_mode(Enum.join(old_lines, "\n"), Enum.join(new_lines, "\n"), :never)
+    |> Enum.map(&[elem(&1, 0) |> to_string, elem(&1, 1)])
+    |> Jason.encode!()
   end
 end

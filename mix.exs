@@ -35,7 +35,7 @@ defmodule Pad.MixProject do
     [
       {:phoenix, "~> 1.7.0"},
       {:phoenix_ecto, "~> 4.4"},
-      {:ecto_sql, "~> 3.6"},
+      {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 3.0"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
@@ -48,11 +48,9 @@ defmodule Pad.MixProject do
       {:jason, "~> 1.4"},
       {:plug_cowboy, "~> 2.6"},
       {:httpoison, "~> 2.1"},
-      {:diff, "~> 1.1"},
-      {:nostrum, github: "Kraigie/nostrum"},
+      {:diff_match_patch, "~> 0.2.0"},
+      {:nostrum, github: "Kraigie/nostrum", runtime: Mix.env() != :dev},
       {:bcrypt_elixir, "~> 2.0"},
-      {:gun, "2.0.1", hex: :remedy_gun, override: true},
-      {:cowlib, "~> 2.11", hex: :remedy_cowlib, override: true},
       {:dart_sass, "~> 0.6", runtime: Mix.env() == :dev}
     ]
   end
